@@ -1,20 +1,28 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { categories } from "@/data/products";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { getCartCount } = useCart();
   const { getWishlistCount } = useWishlist();
+  const { user, signOut } = useAuth();
 
   const cartCount = getCartCount();
   const wishlistCount = getWishlistCount();
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsUserMenuOpen(false);
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
@@ -119,9 +127,72 @@ const Header = () => {
               </Link>
 
               {/* Account */}
-              <Link to="/account" className="hidden sm:flex btn-glass p-2.5 rounded-xl">
-                <User className="h-5 w-5" />
-              </Link>
+              <div className="relative hidden sm:block">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="btn-glass p-2.5 rounded-xl flex items-center gap-2"
+                >
+                  {user ? (
+                    <div className="w-5 h-5 rounded-full gradient-primary flex items-center justify-center text-xs font-bold text-white">
+                      {(user.user_metadata?.display_name || user.email?.charAt(0) || "U").charAt(0).toUpperCase()}
+                    </div>
+                  ) : (
+                    <User className="h-5 w-5" />
+                  )}
+                </button>
+                
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl shadow-xl overflow-hidden z-50"
+                    >
+                      {user ? (
+                        <>
+                          <Link
+                            to="/account"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="block px-4 py-3 hover:bg-muted transition-colors"
+                          >
+                            <p className="font-medium truncate">
+                              {user.user_metadata?.display_name || user.email?.split("@")[0]}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                          </Link>
+                          <hr className="border-border" />
+                          <button
+                            onClick={handleSignOut}
+                            className="w-full px-4 py-3 flex items-center gap-2 hover:bg-muted transition-colors text-destructive"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            Sign Out
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            to="/auth"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="block px-4 py-3 hover:bg-muted transition-colors font-medium"
+                          >
+                            Sign In
+                          </Link>
+                          <hr className="border-border" />
+                          <Link
+                            to="/auth"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="block px-4 py-3 hover:bg-muted transition-colors text-muted-foreground"
+                          >
+                            Create Account
+                          </Link>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Mobile Menu Toggle */}
               <button
@@ -193,13 +264,34 @@ const Header = () => {
               >
                 Flash Deals 🔥
               </Link>
-              <Link
-                to="/account"
-                onClick={() => setIsMenuOpen(false)}
-                className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden"
-              >
-                My Account
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    to="/account"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden"
+                  >
+                    My Account
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden text-left text-destructive"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden"
+                >
+                  Sign In / Create Account
+                </Link>
+              )}
             </nav>
           </motion.div>
         )}
