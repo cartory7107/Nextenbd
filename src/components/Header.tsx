@@ -45,7 +45,7 @@ const Header = () => {
                 <span className="text-xl font-bold text-white">M</span>
               </div>
               <span className="hidden font-display text-xl font-bold gradient-text sm:block">
-                MarketHub
+                NEXTEN
               </span>
             </Link>
 

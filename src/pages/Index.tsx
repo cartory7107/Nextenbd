@@ -224,7 +224,7 @@ const Index = () => {
                           <div className="gradient-primary rounded-2xl p-4 mb-4 inline-block">
                             <span className="text-4xl font-bold text-white">M</span>
                           </div>
-                          <p className="font-bold text-lg">MarketHub</p>
+                          <p className="font-bold text-lg">NEXTEN</p>
                           <p className="text-sm text-muted-foreground">Shop Smarter</p>
                         </div>
                       </div>

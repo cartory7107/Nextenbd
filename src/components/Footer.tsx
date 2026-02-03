@@ -42,7 +42,7 @@ const Footer = () => {
                 <span className="text-xl font-bold text-white">M</span>
               </div>
               <span className="font-display text-xl font-bold gradient-text">
-                MarketHub
+                NEXTEN
               </span>
             </Link>
             <p className="text-muted-foreground text-sm mb-4">
@@ -132,7 +132,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
-                <span>support@markethub.com</span>
+                <span>support@nexten.com</span>
               </li>
             </ul>
           </div>
@@ -167,7 +167,7 @@ const Footer = () => {
         <div className="section-container py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2025 MarketHub. All rights reserved.
+              © 2025 NEXTEN. All rights reserved.
             </p>
             <div className="flex items-center gap-4">
               <img
