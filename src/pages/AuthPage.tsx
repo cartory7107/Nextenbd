@@ -74,8 +74,9 @@ const AuthPage = () => {
         } else {
           toast({
             title: "Account created!",
-            description: "Please check your email to verify your account.",
+            description: "Welcome! You're now signed in.",
           });
+          navigate("/");
         }
       } else {
         const { error } = await signIn(email, password);

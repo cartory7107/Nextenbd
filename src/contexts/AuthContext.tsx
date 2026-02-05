@@ -62,22 +62,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, displayName?: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-
     try {
       const supabase = await getSupabaseClient();
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl,
           data: {
             display_name: displayName,
           },
         },
       });
 
-      return { error: error as Error | null };
+      if (error) {
+        return { error: error as Error };
+      }
+
+      // Auto-login after successful signup
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      return { error: signInError as Error | null };
     } catch (err) {
       return { error: new Error(formatBackendInitError(err)) };
     }
