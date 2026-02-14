@@ -9,10 +9,16 @@ import ProductCard from "@/components/ProductCard";
 import { categories, getTrendingProducts, getNewArrivals } from "@/data/products";
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const trendingProducts = getTrendingProducts();
   const newArrivals = getNewArrivals();
+  const { toast } = useToast();
+
+  const handleAppDownload = (store: string) => {
+    toast({ title: `${store}`, description: "Mobile app coming soon! Stay tuned." });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -69,7 +75,7 @@ const Index = () => {
                 </div>
               </div>
               <Link
-                to="/trending"
+                to="/deals"
                 className="btn-glass px-6 py-3 rounded-xl flex items-center gap-2 hover:glow-accent"
               >
                 View All
@@ -109,7 +115,7 @@ const Index = () => {
                       Don't miss out on this exclusive offer!
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                      <Link to="/signup" className="btn-gradient px-8 py-4 rounded-xl glow-primary">
+                      <Link to="/auth" className="btn-gradient px-8 py-4 rounded-xl glow-primary">
                         Sign Up Now
                       </Link>
                       <Link to="/deals" className="btn-glass px-8 py-4 rounded-xl">
@@ -151,7 +157,7 @@ const Index = () => {
                 </div>
               </div>
               <Link
-                to="/new"
+                to="/deals"
                 className="btn-glass px-6 py-3 rounded-xl flex items-center gap-2 hover:glow-success"
               >
                 View All
@@ -196,14 +202,20 @@ const Index = () => {
                     ))}
                   </ul>
                   <div className="flex flex-wrap gap-4">
-                    <button className="btn-glass px-6 py-3 rounded-xl flex items-center gap-3">
+                    <button
+                      onClick={() => handleAppDownload("App Store")}
+                      className="btn-glass px-6 py-3 rounded-xl flex items-center gap-3"
+                    >
                       <span className="text-2xl">🍎</span>
                       <div className="text-left">
                         <p className="text-xs text-muted-foreground">Download on</p>
                         <p className="font-semibold">App Store</p>
                       </div>
                     </button>
-                    <button className="btn-glass px-6 py-3 rounded-xl flex items-center gap-3">
+                    <button
+                      onClick={() => handleAppDownload("Google Play")}
+                      className="btn-glass px-6 py-3 rounded-xl flex items-center gap-3"
+                    >
                       <span className="text-2xl">🤖</span>
                       <div className="text-left">
                         <p className="text-xs text-muted-foreground">Get it on</p>

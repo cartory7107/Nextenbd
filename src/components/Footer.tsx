@@ -1,8 +1,38 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Youtube, Send, Phone, Mail, MapPin } from "lucide-react";
 import { categories } from "@/data/products";
+import { useToast } from "@/hooks/use-toast";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const { toast } = useToast();
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast({ title: "Enter your email", description: "Please enter a valid email address.", variant: "destructive" });
+      return;
+    }
+    toast({ title: "Subscribed! 🎉", description: "Thank you for subscribing to our newsletter." });
+    setEmail("");
+  };
+
+  const handleSocialClick = (platform: string) => {
+    toast({ title: `${platform}`, description: `Follow us on ${platform} — coming soon!` });
+  };
+
+  const handlePlaceholderLink = (label: string) => {
+    toast({ title: label, description: "This page is coming soon!" });
+  };
+
+  const socialIcons = [
+    { Icon: Facebook, name: "Facebook" },
+    { Icon: Twitter, name: "Twitter" },
+    { Icon: Instagram, name: "Instagram" },
+    { Icon: Youtube, name: "YouTube" },
+  ];
+
   return (
     <footer className="bg-card border-t border-border">
       {/* Newsletter Section */}
@@ -17,17 +47,19 @@ const Footer = () => {
                 Get exclusive deals, new arrivals & special offers
               </p>
             </div>
-            <div className="flex w-full md:w-auto gap-2">
+            <form onSubmit={handleSubscribe} className="flex w-full md:w-auto gap-2">
               <input
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="input-glass flex-1 md:w-80"
               />
-              <button className="btn-gradient px-6 py-3 rounded-xl flex items-center gap-2">
+              <button type="submit" className="btn-gradient px-6 py-3 rounded-xl flex items-center gap-2">
                 <Send className="h-5 w-5" />
                 <span className="hidden sm:inline">Subscribe</span>
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -49,14 +81,14 @@ const Footer = () => {
               Your one-stop destination for premium gadgets, cosmetics, and sports accessories. Quality guaranteed.
             </p>
             <div className="flex gap-3">
-              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                <a
+              {socialIcons.map(({ Icon, name }, i) => (
+                <button
                   key={i}
-                  href="#"
+                  onClick={() => handleSocialClick(name)}
                   className="btn-glass p-2.5 rounded-xl hover:glow-primary transition-all"
                 >
                   <Icon className="h-5 w-5" />
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -84,12 +116,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {["About Us", "Contact Us", "FAQs", "Blog", "Careers"].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => handlePlaceholderLink(item)}
                     className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
                     {item}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -107,12 +139,12 @@ const Footer = () => {
                 "Terms & Conditions",
               ].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => handlePlaceholderLink(item)}
                     className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
                     {item}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>

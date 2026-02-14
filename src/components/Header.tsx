@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown, LogOut, Shield, Store } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -18,6 +18,7 @@ const Header = () => {
   const { getWishlistCount } = useWishlist();
   const { user, signOut } = useAuth();
   const { isAdmin, isVendor } = useUserRole();
+  const navigate = useNavigate();
 
   const cartCount = getCartCount();
   const wishlistCount = getWishlistCount();
@@ -25,6 +26,15 @@ const Header = () => {
   const handleSignOut = async () => {
     await signOut();
     setIsUserMenuOpen(false);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+      setIsSearchOpen(false);
+    }
   };
 
   return (
@@ -73,11 +83,10 @@ const Header = () => {
                 </div>
               </div>
               <Link to="/deals" className="nav-link">Flash Deals</Link>
-              <Link to="/brands" className="nav-link">Brands</Link>
             </nav>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex flex-1 max-w-md">
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md">
               <div className="relative w-full">
                 <input
                   type="text"
@@ -88,7 +97,7 @@ const Header = () => {
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               </div>
-            </div>
+            </form>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
@@ -172,7 +181,7 @@ const Header = () => {
                             )}
                             {isVendor && (
                               <Link
-                                to="/vendor"
+                                to="/become-vendor"
                                 onClick={() => setIsUserMenuOpen(false)}
                                 className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-primary"
                               >
@@ -242,7 +251,7 @@ const Header = () => {
                 exit={{ height: 0, opacity: 0 }}
                 className="md:hidden overflow-hidden pb-4"
               >
-                <div className="relative">
+                <form onSubmit={handleSearch} className="relative">
                   <input
                     type="text"
                     placeholder="Search products..."
@@ -251,7 +260,7 @@ const Header = () => {
                     className="input-glass w-full pl-10"
                   />
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                </div>
+                </form>
               </motion.div>
             )}
           </AnimatePresence>

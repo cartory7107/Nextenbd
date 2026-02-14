@@ -6,11 +6,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useWishlist } from "@/contexts/WishlistContext";
 
 const AccountPage = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { getWishlistCount } = useWishlist();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -27,6 +29,10 @@ const AccountPage = () => {
     navigate("/");
   };
 
+  const handleComingSoon = (label: string) => {
+    toast({ title: label, description: "This feature is coming soon!" });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -37,13 +43,15 @@ const AccountPage = () => {
 
   if (!user) return null;
 
+  const wishlistCount = getWishlistCount();
+
   const menuItems = [
-    { icon: Package, label: "My Orders", href: "/orders", count: 0 },
-    { icon: Heart, label: "Wishlist", href: "/wishlist", count: 0 },
-    { icon: MapPin, label: "Addresses", href: "/addresses", count: 0 },
-    { icon: CreditCard, label: "Payment Methods", href: "/payments", count: 0 },
-    { icon: Gift, label: "My Coupons", href: "/coupons", count: 0 },
-    { icon: Settings, label: "Settings", href: "/settings", count: 0 },
+    { icon: Package, label: "My Orders", href: null, count: 0 },
+    { icon: Heart, label: "Wishlist", href: "/wishlist", count: wishlistCount },
+    { icon: MapPin, label: "Addresses", href: null, count: 0 },
+    { icon: CreditCard, label: "Payment Methods", href: null, count: 0 },
+    { icon: Gift, label: "My Coupons", href: null, count: 0 },
+    { icon: Settings, label: "Settings", href: null, count: 0 },
   ];
 
   const displayName = user.user_metadata?.display_name || user.email?.split("@")[0] || "User";
@@ -84,7 +92,7 @@ const AccountPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
               { label: "Total Orders", value: "0", icon: Package },
-              { label: "Wishlist Items", value: "0", icon: Heart },
+              { label: "Wishlist Items", value: String(wishlistCount), icon: Heart },
               { label: "Saved Addresses", value: "0", icon: MapPin },
               { label: "Coupons", value: "0", icon: Gift },
             ].map((stat, index) => (
@@ -110,23 +118,41 @@ const AccountPage = () => {
             className="glass-card rounded-3xl overflow-hidden"
           >
             <div className="divide-y divide-border">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  className="flex items-center gap-4 p-5 hover:bg-muted/50 transition-colors"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                    <item.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <span className="flex-1 font-medium">{item.label}</span>
-                  {item.count > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                      {item.count}
-                    </span>
-                  )}
-                </Link>
-              ))}
+              {menuItems.map((item) =>
+                item.href ? (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    className="flex items-center gap-4 p-5 hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                      <item.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <span className="flex-1 font-medium">{item.label}</span>
+                    {item.count > 0 && (
+                      <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                        {item.count}
+                      </span>
+                    )}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.label}
+                    onClick={() => handleComingSoon(item.label)}
+                    className="w-full flex items-center gap-4 p-5 hover:bg-muted/50 transition-colors text-left"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                      <item.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <span className="flex-1 font-medium">{item.label}</span>
+                    {item.count > 0 && (
+                      <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                        {item.count}
+                      </span>
+                    )}
+                  </button>
+                )
+              )}
             </div>
           </motion.div>
         </div>

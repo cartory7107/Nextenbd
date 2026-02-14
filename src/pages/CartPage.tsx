@@ -5,9 +5,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/data/products";
+import { useToast } from "@/hooks/use-toast";
 
 const CartPage = () => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
+  const { toast } = useToast();
 
   const subtotal = getCartTotal();
   const deliveryFee = subtotal > 5000 ? 0 : 120;
@@ -194,7 +196,7 @@ const CartPage = () => {
                         className="input-glass pl-10"
                       />
                     </div>
-                    <button className="btn-glass px-4 rounded-xl">Apply</button>
+                    <button onClick={() => toast({ title: "Coupon", description: "Coupon feature coming soon!" })} className="btn-glass px-4 rounded-xl">Apply</button>
                   </div>
                 </div>
 
@@ -225,7 +227,7 @@ const CartPage = () => {
                 </div>
 
                 {/* Checkout Button */}
-                <button className="w-full btn-gradient py-4 rounded-2xl mt-6 font-semibold glow-primary">
+                <button onClick={() => toast({ title: "Checkout", description: "Checkout feature coming soon!" })} className="w-full btn-gradient py-4 rounded-2xl mt-6 font-semibold glow-primary">
                   Proceed to Checkout
                 </button>
 

@@ -14,6 +14,9 @@ import AuthPage from "./pages/AuthPage";
 import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
 import VendorApplicationPage from "./pages/VendorApplicationPage";
+import WishlistPage from "./pages/WishlistPage";
+import DealsPage from "./pages/DealsPage";
+import SearchResultsPage from "./pages/SearchResultsPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UsersPage from "./pages/admin/UsersPage";
 import VendorsPage from "./pages/admin/VendorsPage";
@@ -38,6 +41,9 @@ const App = () => (
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/account" element={<AccountPage />} />
                 <Route path="/become-vendor" element={<VendorApplicationPage />} />
+                <Route path="/wishlist" element={<WishlistPage />} />
+                <Route path="/deals" element={<DealsPage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<UsersPage />} />
