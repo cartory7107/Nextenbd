@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, Store, ShoppingBag, DollarSign, TrendingUp, Package } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabaseClient } from "@/integrations/supabase/lazyClient";
 import AdminLayout from "./AdminLayout";
 
 const AdminDashboard = () => {
@@ -17,6 +17,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        const supabase = await getSupabaseClient();
         // Fetch user count
         const { count: userCount } = await supabase
           .from('profiles')

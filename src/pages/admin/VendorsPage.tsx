@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabaseClient } from "@/integrations/supabase/lazyClient";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "./AdminLayout";
 
@@ -48,6 +48,7 @@ const VendorsPage = () => {
 
   const fetchVendors = async () => {
     try {
+      const supabase = await getSupabaseClient();
       const { data, error } = await supabase
         .from('vendors')
         .select('*')
@@ -86,6 +87,7 @@ const VendorsPage = () => {
 
   const approveVendor = async (vendorId: string) => {
     try {
+      const supabase = await getSupabaseClient();
       const { error } = await supabase
         .from('vendors')
         .update({ is_approved: true })
@@ -120,6 +122,7 @@ const VendorsPage = () => {
 
   const rejectVendor = async (vendorId: string) => {
     try {
+      const supabase = await getSupabaseClient();
       const { error } = await supabase
         .from('vendors')
         .delete()
@@ -145,6 +148,7 @@ const VendorsPage = () => {
 
   const toggleVendorStatus = async (vendorId: string, isActive: boolean) => {
     try {
+      const supabase = await getSupabaseClient();
       const { error } = await supabase
         .from('vendors')
         .update({ is_active: !isActive })
