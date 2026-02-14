@@ -21,7 +21,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabaseClient } from "@/integrations/supabase/lazyClient";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "./AdminLayout";
@@ -69,6 +69,7 @@ const UsersPage = () => {
 
   const fetchUsers = async () => {
     try {
+      const supabase = await getSupabaseClient();
       // Fetch all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
@@ -152,6 +153,7 @@ const UsersPage = () => {
     setSaving(true);
 
     try {
+      const supabase = await getSupabaseClient();
       // Delete existing roles
       await supabase
         .from('user_roles')
@@ -194,6 +196,7 @@ const UsersPage = () => {
     setSaving(true);
 
     try {
+      const supabase = await getSupabaseClient();
       // Delete existing permissions
       await supabase
         .from('role_permissions')

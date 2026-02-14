@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabaseClient } from "@/integrations/supabase/lazyClient";
 
 export type AppRole = 'super_admin' | 'admin' | 'vendor' | 'shareholder' | 'developer' | 'user';
 export type AppPermission = 
@@ -44,6 +44,8 @@ export const useUserRole = (): UserRoleData => {
     }
 
     try {
+      const supabase = await getSupabaseClient();
+      
       // Fetch user roles
       const { data: rolesData, error: rolesError } = await supabase
         .from('user_roles')

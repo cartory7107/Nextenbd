@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabaseClient } from "@/integrations/supabase/lazyClient";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -42,6 +42,7 @@ const VendorApplicationPage = () => {
     setIsSubmitting(true);
 
     try {
+      const supabase = await getSupabaseClient();
       // Check if user already has a vendor application
       const { data: existing } = await supabase
         .from('vendors')
