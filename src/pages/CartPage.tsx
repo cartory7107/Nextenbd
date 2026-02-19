@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShoppingCart, Trash2, Minus, Plus, ArrowLeft, Tag } from "lucide-react";
 import Header from "@/components/Header";
@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 const CartPage = () => {
   const { items, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const subtotal = getCartTotal();
   const deliveryFee = subtotal > 5000 ? 0 : 120;
@@ -227,7 +228,7 @@ const CartPage = () => {
                 </div>
 
                 {/* Checkout Button */}
-                <button onClick={() => toast({ title: "Checkout", description: "Checkout feature coming soon!" })} className="w-full btn-gradient py-4 rounded-2xl mt-6 font-semibold glow-primary">
+                <button onClick={() => navigate("/checkout")} className="w-full btn-gradient py-4 rounded-2xl mt-6 font-semibold glow-primary">
                   Proceed to Checkout
                 </button>
 
