@@ -134,7 +134,7 @@ const Header = () => {
               </Link>
 
               {/* Account */}
-              <div className="relative hidden sm:block">
+              <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="btn-glass p-2.5 rounded-xl flex items-center gap-2"
