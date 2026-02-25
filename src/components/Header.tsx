@@ -219,7 +219,7 @@ const Header = () => {
                           </Link>
                           <hr className="border-border" />
                           <Link
-                            to="/auth"
+                            to="/auth?mode=signup"
                             onClick={() => setIsUserMenuOpen(false)}
                             className="block px-4 py-3 hover:bg-muted transition-colors text-muted-foreground"
                           >
