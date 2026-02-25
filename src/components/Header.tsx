@@ -1,32 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown, LogOut, Shield, Store } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, ChevronDown } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUserRole } from "@/hooks/useUserRole";
 import { categories } from "@/data/products";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { getCartCount } = useCart();
   const { getWishlistCount } = useWishlist();
-  const { user, signOut } = useAuth();
-  const { isAdmin, isVendor } = useUserRole();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const cartCount = getCartCount();
   const wishlistCount = getWishlistCount();
-
-  const handleSignOut = async () => {
-    await signOut();
-    setIsUserMenuOpen(false);
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,103 +126,24 @@ const Header = () => {
               </Link>
 
               {/* Account */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="btn-glass p-2.5 rounded-xl flex items-center gap-2"
-                >
-                  {user ? (
-                    <div className="w-5 h-5 rounded-full gradient-primary flex items-center justify-center text-xs font-bold text-white">
-                      {(user.user_metadata?.display_name || user.email?.charAt(0) || "U").charAt(0).toUpperCase()}
-                    </div>
-                  ) : (
-                    <User className="h-5 w-5" />
-                  )}
-                </button>
-                
-                <AnimatePresence>
-                  {isUserMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl shadow-xl overflow-hidden z-50"
-                    >
-                        {user ? (
-                          <>
-                            <Link
-                              to="/account"
-                              onClick={() => setIsUserMenuOpen(false)}
-                              className="block px-4 py-3 hover:bg-muted transition-colors"
-                            >
-                              <p className="font-medium truncate">
-                                {user.user_metadata?.display_name || user.email?.split("@")[0]}
-                              </p>
-                              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                            </Link>
-                            <hr className="border-border" />
-                            {isAdmin && (
-                              <Link
-                                to="/admin"
-                                onClick={() => setIsUserMenuOpen(false)}
-                                className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-primary"
-                              >
-                                <Shield className="h-4 w-4" />
-                                Admin Panel
-                              </Link>
-                            )}
-                            {isVendor && (
-                              <Link
-                                to="/become-vendor"
-                                onClick={() => setIsUserMenuOpen(false)}
-                                className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-primary"
-                              >
-                                <Store className="h-4 w-4" />
-                                Vendor Dashboard
-                              </Link>
-                            )}
-                            {!isVendor && !isAdmin && (
-                              <Link
-                                to="/become-vendor"
-                                onClick={() => setIsUserMenuOpen(false)}
-                                className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors"
-                              >
-                                <Store className="h-4 w-4" />
-                                Become a Vendor
-                              </Link>
-                            )}
-                            <hr className="border-border" />
-                            <button
-                              onClick={handleSignOut}
-                              className="w-full px-4 py-3 flex items-center gap-2 hover:bg-muted transition-colors text-destructive"
-                            >
-                              <LogOut className="h-4 w-4" />
-                              Sign Out
-                            </button>
-                          </>
-                      ) : (
-                        <>
-                          <Link
-                            to="/auth"
-                            onClick={() => setIsUserMenuOpen(false)}
-                            className="block px-4 py-3 hover:bg-muted transition-colors font-medium"
-                          >
-                            Sign In
-                          </Link>
-                          <hr className="border-border" />
-                          <Link
-                            to="/auth?mode=signup"
-                            onClick={() => setIsUserMenuOpen(false)}
-                            className="block px-4 py-3 hover:bg-muted transition-colors text-muted-foreground"
-                          >
-                            Create Account
-                          </Link>
-                        </>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              <button
+                onClick={() => {
+                  if (user) {
+                    navigate("/account");
+                  } else {
+                    navigate("/auth");
+                  }
+                }}
+                className="btn-glass p-2.5 rounded-xl flex items-center gap-2"
+              >
+                {user ? (
+                  <div className="w-5 h-5 rounded-full gradient-primary flex items-center justify-center text-xs font-bold text-white">
+                    {(user.user_metadata?.display_name || user.email?.charAt(0) || "U").charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
+              </button>
 
               {/* Mobile Menu Toggle */}
               <button
@@ -303,24 +216,13 @@ const Header = () => {
                 Flash Deals 🔥
               </Link>
               {user ? (
-                <>
-                  <Link
-                    to="/account"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden"
-                  >
-                    My Account
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleSignOut();
-                      setIsMenuOpen(false);
-                    }}
-                    className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden text-left text-destructive"
-                  >
-                    Sign Out
-                  </button>
-                </>
+                <Link
+                  to="/account"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-muted transition-colors sm:hidden"
+                >
+                  My Account
+                </Link>
               ) : (
                 <Link
                   to="/auth"

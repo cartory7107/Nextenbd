@@ -163,6 +163,11 @@ const ShippingStep = ({
               ))}
             </select>
             {errors.district && <p className="text-destructive text-xs mt-1">{errors.district}</p>}
+            {address.district && (
+              <p className="text-xs text-muted-foreground mt-1">
+                📦 Delivery charge: {address.district.toLowerCase() === "dhaka" ? "৳49 (Inside Dhaka)" : "৳99 (Outside Dhaka)"}
+              </p>
+            )}
           </div>
         </div>
         <Field label="Postal Code" field="postalCode" placeholder="e.g. 1000" />
@@ -442,7 +447,9 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
 
   const subtotal = getCartTotal();
-  const deliveryFee = subtotal > 5000 ? 0 : 120;
+  const isDhaka = address.district.toLowerCase() === "dhaka";
+  const baseDeliveryFee = isDhaka ? 49 : 99;
+  const deliveryFee = subtotal > 5000 ? 0 : baseDeliveryFee;
   const total = subtotal + deliveryFee;
 
   // Redirect if cart empty
