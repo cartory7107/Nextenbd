@@ -254,14 +254,23 @@ const AuthPage = () => {
           <button
             type="button"
             onClick={async () => {
-              const { lovable } = await import("@/integrations/lovable/index");
-              const { error } = await lovable.auth.signInWithOAuth("google", {
-                redirect_uri: window.location.origin,
-              });
-              if (error) {
+              try {
+                const { lovable } = await import("@/integrations/lovable/index");
+                const result = await lovable.auth.signInWithOAuth("google", {
+                  redirect_uri: window.location.origin,
+                });
+                if (result?.error) {
+                  toast({
+                    title: "Google sign-in failed",
+                    description: result.error.message,
+                    variant: "destructive",
+                  });
+                }
+              } catch (err) {
+                console.error("Google sign-in error:", err);
                 toast({
-                  title: "Google sign-in failed",
-                  description: error.message,
+                  title: "Google sign-in unavailable",
+                  description: "Please rebuild the preview or try again later.",
                   variant: "destructive",
                 });
               }
